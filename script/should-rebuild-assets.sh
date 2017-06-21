@@ -1,13 +1,13 @@
 #!/bin/bash
 
-# Exit code is 0 (true) if given old version of assets can be reused
+# Exit code is 0 (true) if assets should be rebuilt
 
 set -e
 
 COMPARE_SHA="${1-HEAD}"
 
 # Make sure cached revision exists
-[ "$(git cat-file -t "$COMPARE_SHA")" == "commit" ]
+[ "$(git cat-file -t "$COMPARE_SHA")" != "commit" ] && return 0
 
 # TODO consider if only ancestors should be treated as valid cache
 
@@ -18,4 +18,4 @@ CHANGES=$(git diff --shortstat "$COMPARE_SHA" -- \
               package.json \
               vendor/assets)
 
-[ -z "$CHANGES" ]
+[ -n "$CHANGES" ]
